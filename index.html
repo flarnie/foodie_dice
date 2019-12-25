@@ -1,7 +1,275 @@
 <style>
-  h1 {
-    background-color: tomato;
-    border: solid 1px green;
+  @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+  * {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+  }
+  html, body, .outer {
+    height: 100%;
+    margin: 0px;
+  }
+  .outer {
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background-color: #8d6e63;
+    color: #ffffff;
+    padding: 1.5rem 6rem;
+    width: 100%;
+  }
+  .medium-centered {
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  main {
+    background-color: #e0e0e0;
+    flex-grow: 2;
+    width: 100%;
+  }
+  .card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    margin: -1.5rem auto;
+  }
+
+  section {
+    padding: .5em 0;
+  }
+
+  button {
+    background: #f44236;
+    border: 0px none transparent;
+    padding: 7px 14px;
+    color: black;
+    font-size: 13px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    text-decoration: none;
+    vertical-align: middle;
+  }
+  button:active, button:hover, button:focus {
+    background: #ff7961;
+  }
+  .visuallyHidden {
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; /* added line */
+  }
+  @media only screen and (max-device-width: 1024px) {
+    header {
+      padding: 1.5rem;
+    }
+    .card {
+      margin: 0 auto;
+    }
   }
 </style>
-<h1>Hello World!</h1>
+<div class="outer">
+  <header>
+    <div class="medium-centered">
+      <h1>What's for dinner?</h1>
+    </div>
+  </header>
+  <main>
+    <div class="card medium-centered">
+      <button onClick="rollDice()">Roll again!</button>
+      <section>
+        <b>Cooking method:</b>
+        <span id="cookingMethod">?</span>
+      </section>
+      <section>
+        <b>Protein:</b>
+        <span id="protein">?</span>
+      </section>
+      <section>
+        <b>Grain/Carb:</b>
+        <span id="carb">?</span>
+      </section>
+      <section>
+        <b>Veggie:</b>
+        <span id="veggie">?</span>
+      </section>
+      <section>
+        <b>Spice/Seasoning:</b>
+        <span id="spice">?</span>
+      </section>
+      <section>
+        <b>With:</b>
+        <span id="extra">?</span>
+      </section>
+      <div id="search-results">
+        <script async src="https://cse.google.com/cse.js?cx=001907302576230863114:3orpspuyv39"></script>
+        <div class="gcse-search"></div>
+      </div>
+    </div>
+  </main>
+  <script>
+    const diceInfo = {
+      protein: {
+        options: [
+          'beef or tempeh',
+          'chicken or tofu',
+          'turkey or seitan',
+          'lamb or beans',
+          'mushroom or cheese',
+          'black cod or halibut',
+          'fatty salmon or char',
+          'shrimp or crab',
+          'mussels or clams',
+          'bacon or sausage',
+          'scallops or lobster',
+        ],
+      },
+      cookingMethod: {
+        options: [
+          'sautéd',
+          'sautéd',
+          'stir fry',
+          'roasted',
+          'baked',
+          'simmered',
+          'poached',
+        ],
+      },
+      carb: {
+        options: [
+          'cous cous',
+          'farro',
+          'pasta',
+          'baked potato',
+          'sweet potato',
+          'parsnip',
+          'rice',
+          'black rice',
+          'bulgur',
+          'quinoa',
+        ],
+      },
+      veggie: {
+        options: [
+          'carrots',
+          'salad',
+          'salad',
+          'brussel sprouts',
+          'cucumber',
+          'avocado',
+          'peas',
+          'chard',
+          'asparagus',
+          'spinach',
+          'kale',
+          'zuchinni',
+          'green beans',
+          'artichoke',
+          'corn',
+          'broccoli',
+          'cauliflower',
+        ],
+      },
+      spice: {
+        options: [
+          'BBQ',
+          'tamari',
+          'turmeric & saffron',
+          'curry',
+          'chimi churri',
+          'cilantro',
+          'basil',
+          'garlic',
+          'carmelized onion',
+          'rosemary',
+          'chilli',
+          'citrus',
+          'dill or sage',
+          'white wine',
+          'sage',
+          'salsa',
+          'tikka masala',
+        ],
+      },
+      extra: {
+        options: [
+          'lemon',
+          'tomato',
+          'cheese',
+          'jalepeno',
+          'nuts',
+          'pepper',
+          'olive oil',
+          'bread crumbs',
+          'butter',
+        ],
+      },
+    };
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+    }
+    function getRandomChoice(arr) {
+      const choice =  arr[getRandomInt(0, arr.length - 1)];
+      console.log('choice is ', choice);
+      return choice;
+    }
+    let searchInput;
+    setTimeout(() => {
+      searchInput =
+      document.getElementById('search-results').getElementsByTagName('input')[0];
+      console.log('searchInput is set to ', searchInput);
+      window.rollDice();
+    }, 100);
+    /*
+     * foodItems has this format:
+     * {
+     *  protein: string;
+     *  cookingMethod: string;
+     *  carb: string;
+     *  veggie: string;
+     *  spice: string;
+     *  extra: string;
+     *  }
+     */
+    function createSearchQuery(foodItems) {
+      let searchQuery = foodItems.cookingMethod +
+        ' ' +
+        foodItems.spice +
+        ' ' +
+        foodItems.protein +
+        ' with ';
+      if (foodItems.carb === 'pasta') {
+        searchQuery += 'pasta and ' + foodItems.extra;
+      } else {
+        searchQuery += foodItems.extra;
+      }
+      return searchQuery + ' recipe';
+    }
+    function searchForRecipes(searchQuery) {
+      searchInput.value = searchQuery;
+      const searchButton =
+      document.getElementById('search-results').getElementsByTagName('button')[0];
+      searchButton.click();
+    };
+    window.rollDice = function () {
+      const ids = Object.keys(diceInfo);
+      const foodItems = {};
+      ids.forEach(id => {
+        // get the food choice
+        const foodChoice = getRandomChoice(diceInfo[id].options);
+        // show the food choice
+        const el = document.getElementById(id);
+        el.textContent = getRandomChoice(diceInfo[id].options);
+        // save the food choice for when we fetch recipes
+        foodItems[id] = foodChoice;
+      });
+      const searchQuery = createSearchQuery(foodItems);
+      searchForRecipes(searchQuery);
+    };
+  </script>
+</div>
